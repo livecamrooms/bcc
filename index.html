@@ -13,7 +13,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://example.com/" />
 
-  <!-- Schema.org JSON-LD (populated dynamically below) -->
+  <!-- Schema.org JSON-LD -->
   <script id="schema-website" type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -117,13 +117,74 @@
       border-color: var(--surface2);
     }
 
-    .live-count {
-      margin-left: auto;
-      font-size: 12px;
-      color: var(--muted);
+    /* ── Header right: count + refresh ── */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
       flex-shrink: 0;
     }
+
+    .live-count {
+      font-size: 12px;
+      color: var(--muted);
+    }
     .live-count strong { color: var(--white); }
+
+    /* Refresh ring */
+    .refresh-wrap {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      flex-shrink: 0;
+      title: "Refresh now";
+    }
+    .refresh-wrap:hover .refresh-icon { color: var(--white); }
+
+    .refresh-icon {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: color 0.15s;
+      font-size: 13px;
+      user-select: none;
+    }
+
+    .refresh-ring {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      transform: rotate(-90deg);
+      display: block;
+    }
+    .refresh-ring-bg {
+      fill: none;
+      stroke: var(--surface2);
+      stroke-width: 2.5;
+    }
+    .refresh-ring-arc {
+      fill: none;
+      stroke: var(--muted);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-dasharray: 75.4; /* 2πr = 2π×12 */
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1s linear;
+    }
+
+    /* Spinning state when refreshing */
+    .refresh-wrap.spinning .refresh-icon {
+      animation: spin 0.7s linear infinite;
+    }
+    .refresh-wrap.spinning .refresh-ring-arc {
+      stroke: var(--muted);
+      stroke-dashoffset: 75.4;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── Main ── */
     main {
@@ -180,6 +241,17 @@
       transition: transform 0.3s ease;
     }
     article.card:hover .card-thumb img { transform: scale(1.05); }
+
+    /* Thumb placeholder when image absent */
+    .thumb-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--surface2);
+      font-size: 28px;
+    }
 
     /* Live badge */
     .live-badge {
@@ -265,7 +337,7 @@
       text-overflow: ellipsis;
     }
 
-    /* ── Loading / Empty ── */
+    /* ── Loading ── */
     #loading {
       display: flex;
       flex-direction: column;
@@ -283,7 +355,6 @@
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
 
     #empty-msg {
       display: none;
@@ -329,7 +400,17 @@
       <button class="filter-btn" data-filter="trans">Trans</button>
       <button class="filter-btn" data-filter="featured">Featured</button>
     </nav>
-    <div class="live-count" aria-live="polite"><strong id="count">0</strong> live</div>
+    <div class="header-right">
+      <div class="live-count" aria-live="polite"><strong id="count">0</strong> live</div>
+      <!-- Refresh ring button -->
+      <div class="refresh-wrap" id="refreshBtn" role="button" tabindex="0" aria-label="Refresh now">
+        <svg class="refresh-ring" viewBox="0 0 28 28" aria-hidden="true">
+          <circle class="refresh-ring-bg" cx="14" cy="14" r="12" />
+          <circle class="refresh-ring-arc" id="ringArc" cx="14" cy="14" r="12" />
+        </svg>
+        <span class="refresh-icon" id="refreshIcon">↻</span>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -361,21 +442,25 @@
 (function () {
   'use strict';
 
+  /* ── Config ── */
+  var REFRESH_INTERVAL = 60; // seconds
+
+  /* ── Image proxy (strips hotlink protection) ── */
+  function proxyImg(url) {
+    if (!url) return '';
+    // wsrv.nl is a free, open-source image proxy/CDN
+    return 'https://wsrv.nl/?url=' + encodeURIComponent(url) + '&w=480&output=webp&q=80';
+  }
+
   /* ── Affiliate link builders ── */
-  function chaturbateLink(gender, username) {
-    const base = 'https://chaturbate.com/in/';
-    const map = {
-      female: 'IsSO',
-      male:   'R2Xc',
-      couple: '0G9g',
-      trans:  'khMd',
-    };
-    const tour = map[gender] || 'grq0';
-    return `${base}?tour=${tour}&campaign=E8bhk&track=default`;
+  function chaturbateLink(gender) {
+    var map = { female: 'IsSO', male: 'R2Xc', couple: '0G9g', trans: 'khMd' };
+    var tour = map[gender] || 'grq0';
+    return 'https://chaturbate.com/in/?tour=' + tour + '&campaign=E8bhk&track=default';
   }
 
   function camsodaLink(gender) {
-    const map = {
+    var map = {
       female: 'https://www.camsoda.com/girls?id=bewse2&type=REV',
       couple: 'https://www.camsoda.com/couples?id=bewse2&type=REV',
       male:   'https://www.camsoda.com/men?id=bewse2&type=REV',
@@ -385,13 +470,13 @@
   }
 
   function bongaLink(modelId) {
-    return `https://bngprm.com/promo.php?type=direct_link&v=2&c=18144&models[]=${encodeURIComponent(modelId)}`;
+    return 'https://bngprm.com/promo.php?type=direct_link&v=2&c=18144&models[]=' + encodeURIComponent(modelId);
   }
 
-  /* ── Normalise gender strings ── */
+  /* ── Normalise gender ── */
   function normaliseGender(raw) {
     if (!raw) return 'female';
-    const s = String(raw).toLowerCase().trim();
+    var s = String(raw).toLowerCase().trim();
     if (s === 'f' || s === 'female' || s === 'girl' || s === 'girls' || s === 'woman') return 'female';
     if (s === 'm' || s === 'male' || s === 'man' || s === 'men' || s === 'gay') return 'male';
     if (s === 's' || s === 'couple' || s === 'couples' || s === 'c') return 'couple';
@@ -402,79 +487,76 @@
   /* ── Fetch helpers ── */
   async function fetchChaturbate() {
     try {
-      const res = await fetch(
+      var res = await fetch(
         'https://chaturbate.com/api/public/affiliates/onlinerooms/?wm=E8bhk&client_ip=request_ip&limit=50',
         { mode: 'cors' }
       );
       if (!res.ok) return [];
-      const data = await res.json();
-      const rooms = Array.isArray(data.results) ? data.results : (Array.isArray(data) ? data : []);
-      return rooms.map((r) => ({
-        id:        `cb-${r.username}`,
-        username:  r.username || 'model',
-        gender:    normaliseGender(r.gender),
-        thumb:     r.preview_image_url_360x270 || r.preview_image_url || '',
-        viewers:   r.num_users || 0,
-        topic:     r.subject || '',
-        href:      chaturbateLink(normaliseGender(r.gender), r.username),
-        source:    'Chaturbate',
-        featured:  (r.num_users || 0) > 1000,
-      }));
-    } catch (e) {
-      return [];
-    }
+      var data = await res.json();
+      var rooms = Array.isArray(data.results) ? data.results : (Array.isArray(data) ? data : []);
+      return rooms.map(function (r) {
+        var gender = normaliseGender(r.gender);
+        return {
+          id:       'cb-' + r.username,
+          username: r.username || 'model',
+          gender:   gender,
+          thumb:    r.preview_image_url_360x270 || r.preview_image_url || '',
+          viewers:  r.num_users || 0,
+          topic:    r.subject || '',
+          href:     chaturbateLink(gender),
+          source:   'Chaturbate',
+          featured: (r.num_users || 0) > 1000,
+        };
+      });
+    } catch (e) { return []; }
   }
 
   async function fetchCamsoda() {
     try {
-      const res = await fetch(
+      var res = await fetch(
         'https://feed.camsoda.com/api/v1/browse/online_embed?id=bewse2&cmp=CMP_HERE&index=1&length=50',
         { mode: 'cors' }
       );
       if (!res.ok) return [];
-      const data = await res.json();
-      const models = Array.isArray(data.data) ? data.data :
-                     Array.isArray(data.results) ? data.results :
-                     Array.isArray(data) ? data : [];
-      return models.map((m) => {
-        const gender = normaliseGender(m.gender || m.sex);
-        const thumb  = m.thumbnail || m.preview || m.img || '';
+      var data = await res.json();
+      var models = Array.isArray(data.data)    ? data.data :
+                   Array.isArray(data.results) ? data.results :
+                   Array.isArray(data)         ? data : [];
+      return models.map(function (m) {
+        var gender = normaliseGender(m.gender || m.sex);
         return {
-          id:       `cs-${m.username || m.user}`,
+          id:       'cs-' + (m.username || m.user),
           username: m.username || m.user || 'model',
-          gender,
-          thumb,
+          gender:   gender,
+          thumb:    m.thumbnail || m.preview || m.img || '',
           viewers:  m.viewers || m.num_users || 0,
           topic:    m.subject || m.title || '',
           href:     camsodaLink(gender),
           source:   'CamSoda',
-          featured: (m.featured === true || m.top === true),
+          featured: !!(m.featured || m.top),
         };
       });
-    } catch (e) {
-      return [];
-    }
+    } catch (e) { return []; }
   }
 
   async function fetchBonga() {
     try {
-      const res = await fetch(
+      var res = await fetch(
         'https://bngprm.com/promo.php?c=18144&type=api&api_v=1&limit=50&api_type=json',
         { mode: 'cors' }
       );
       if (!res.ok) return [];
-      const data = await res.json();
-      const models = Array.isArray(data.models) ? data.models :
-                     Array.isArray(data) ? data : [];
-      return models.map((m) => {
-        const id    = m.id || m.user_id || m.username;
-        const gender = normaliseGender(m.gender || m.sex);
-        const thumb = m.preview || m.thumbnail || m.image || '';
+      var data = await res.json();
+      var models = Array.isArray(data.models) ? data.models :
+                   Array.isArray(data)         ? data : [];
+      return models.map(function (m) {
+        var id     = m.id || m.user_id || m.username;
+        var gender = normaliseGender(m.gender || m.sex);
         return {
-          id:       `bc-${id}`,
+          id:       'bc-' + id,
           username: m.username || m.display_name || 'model',
-          gender,
-          thumb,
+          gender:   gender,
+          thumb:    m.preview || m.thumbnail || m.image || '',
           viewers:  m.viewers || 0,
           topic:    m.topic || m.subject || '',
           href:     bongaLink(id),
@@ -482,54 +564,7 @@
           featured: false,
         };
       });
-    } catch (e) {
-      return [];
-    }
-  }
-
-  /* ── Build card DOM ── */
-  function buildCard(model) {
-    const a = document.createElement('a');
-    a.className = 'card';
-    a.href      = model.href;
-    a.target    = '_blank';
-    a.rel       = 'noopener noreferrer';
-    a.setAttribute('aria-label', `${model.username} — live on ${model.source}`);
-    a.dataset.gender   = model.gender;
-    a.dataset.featured = model.featured ? '1' : '0';
-
-    const genderLabel = {
-      female: 'Female', male: 'Male', couple: 'Couples', trans: 'Trans',
-    }[model.gender] || 'Live';
-
-    const viewersBadge = model.viewers
-      ? `<span class="viewer-count" aria-label="${model.viewers.toLocaleString()} viewers">${formatNum(model.viewers)}</span>`
-      : '';
-
-    const thumb = model.thumb
-      ? `<img src="${escapeAttr(model.thumb)}" alt="${escapeAttr(model.username)} live cam preview" loading="lazy" decoding="async" onerror="this.closest('.card-thumb').style.background='#222'" />`
-      : '';
-
-    const topicHtml = model.topic
-      ? `<p class="card-topic" title="${escapeAttr(model.topic)}">${escapeHtml(model.topic)}</p>`
-      : '';
-
-    a.innerHTML = `
-      <div class="card-thumb">
-        ${thumb}
-        <span class="live-badge"><span class="pulse" aria-hidden="true"></span>LIVE</span>
-        ${viewersBadge}
-      </div>
-      <div class="card-body">
-        <p class="card-username">${escapeHtml(model.username)}</p>
-        <div class="card-meta">
-          <span class="badge">${genderLabel}</span>
-          <span class="badge-source">${escapeHtml(model.source)}</span>
-        </div>
-        ${topicHtml}
-      </div>`;
-
-    return a;
+    } catch (e) { return []; }
   }
 
   /* ── Utilities ── */
@@ -543,23 +578,81 @@
   function escapeAttr(s) {
     return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
+  function shuffle(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+  }
+  function dedup(arr) {
+    var seen = new Set();
+    return arr.filter(function (m) {
+      if (seen.has(m.id)) return false;
+      seen.add(m.id); return true;
+    });
+  }
+
+  /* ── Build card ── */
+  function buildCard(model) {
+    var a = document.createElement('a');
+    a.className = 'card';
+    a.href      = model.href;
+    a.target    = '_blank';
+    a.rel       = 'noopener noreferrer';
+    a.setAttribute('aria-label', model.username + ' — live on ' + model.source);
+    a.dataset.gender   = model.gender;
+    a.dataset.featured = model.featured ? '1' : '0';
+
+    var genderLabel = { female:'Female', male:'Male', couple:'Couples', trans:'Trans' }[model.gender] || 'Live';
+    var viewersBadge = model.viewers
+      ? '<span class="viewer-count" aria-label="' + model.viewers.toLocaleString() + ' viewers">' + formatNum(model.viewers) + '</span>'
+      : '';
+
+    var thumbHtml;
+    var proxied = proxyImg(model.thumb);
+    if (proxied) {
+      thumbHtml = '<img src="' + escapeAttr(proxied) + '" alt="' + escapeAttr(model.username) + ' live cam preview" loading="lazy" decoding="async" onerror="this.style.display=\'none\'" />';
+    } else {
+      thumbHtml = '<div class="thumb-placeholder" aria-hidden="true">▶</div>';
+    }
+
+    var topicHtml = model.topic
+      ? '<p class="card-topic" title="' + escapeAttr(model.topic) + '">' + escapeHtml(model.topic) + '</p>'
+      : '';
+
+    a.innerHTML =
+      '<div class="card-thumb">' +
+        thumbHtml +
+        '<span class="live-badge"><span class="pulse" aria-hidden="true"></span>LIVE</span>' +
+        viewersBadge +
+      '</div>' +
+      '<div class="card-body">' +
+        '<p class="card-username">' + escapeHtml(model.username) + '</p>' +
+        '<div class="card-meta">' +
+          '<span class="badge">' + genderLabel + '</span>' +
+          '<span class="badge-source">' + escapeHtml(model.source) + '</span>' +
+        '</div>' +
+        topicHtml +
+      '</div>';
+
+    return a;
+  }
 
   /* ── State ── */
-  let allModels  = [];
-  let activeFilter = 'all';
+  var allModels    = [];
+  var activeFilter = 'all';
 
-  /* ── Render grid ── */
+  /* ── Render ── */
   function render() {
-    const grid = document.getElementById('grid');
-    const emptyMsg = document.getElementById('empty-msg');
+    var grid     = document.getElementById('grid');
+    var emptyMsg = document.getElementById('empty-msg');
 
-    const filtered = allModels.filter((m) => {
+    var filtered = allModels.filter(function (m) {
       if (activeFilter === 'all')      return true;
       if (activeFilter === 'featured') return m.featured;
       return m.gender === activeFilter;
     });
 
-    // Update count
     document.getElementById('count').textContent = filtered.length.toLocaleString();
 
     grid.innerHTML = '';
@@ -569,37 +662,29 @@
     }
     emptyMsg.style.display = 'none';
 
-    // Shuffle for variety then preserve featured at top
-    const featured = filtered.filter((m) => m.featured);
-    const rest     = filtered.filter((m) => !m.featured);
+    var featured = filtered.filter(function (m) { return m.featured; });
+    var rest     = filtered.filter(function (m) { return !m.featured; });
     shuffle(rest);
-    [...featured, ...rest].forEach((m) => grid.appendChild(buildCard(m)));
+
+    var frag = document.createDocumentFragment();
+    featured.concat(rest).forEach(function (m) { frag.appendChild(buildCard(m)); });
+    grid.appendChild(frag);
 
     // Update JSON-LD ItemList
     try {
-      const schema = document.getElementById('schema-itemlist');
-      const obj = JSON.parse(schema.textContent);
-      obj.itemListElement = filtered.slice(0, 50).map((m, i) => ({
-        '@type': 'ListItem',
-        position: i + 1,
-        url: m.href,
-        name: m.username,
-      }));
+      var schema = document.getElementById('schema-itemlist');
+      var obj    = JSON.parse(schema.textContent);
+      obj.itemListElement = filtered.slice(0, 50).map(function (m, i) {
+        return { '@type':'ListItem', position: i+1, url: m.href, name: m.username };
+      });
       schema.textContent = JSON.stringify(obj);
     } catch (_) {}
   }
 
-  function shuffle(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-  }
-
   /* ── Filter buttons ── */
-  document.querySelectorAll('.filter-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+  document.querySelectorAll('.filter-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.filter-btn').forEach(function (b) { b.classList.remove('active'); });
       btn.classList.add('active');
       activeFilter = btn.dataset.filter;
       render();
@@ -607,30 +692,67 @@
     });
   });
 
-  /* ── Dedup by id ── */
-  function dedup(arr) {
-    const seen = new Set();
-    return arr.filter((m) => {
-      if (seen.has(m.id)) return false;
-      seen.add(m.id);
-      return true;
-    });
+  /* ── Auto-refresh timer ── */
+  var refreshBtn  = document.getElementById('refreshBtn');
+  var ringArc     = document.getElementById('ringArc');
+  var CIRCUMF     = 75.4; // 2π × 12
+  var timerHandle = null;
+  var secsLeft    = REFRESH_INTERVAL;
+  var tickHandle  = null;
+
+  function setArc(frac) {
+    // frac 1 = full ring, 0 = empty
+    ringArc.style.strokeDashoffset = (CIRCUMF * (1 - frac)).toFixed(2);
   }
 
-  /* ── Bootstrap ── */
+  function startTimer() {
+    clearInterval(tickHandle);
+    secsLeft = REFRESH_INTERVAL;
+    setArc(1);
+
+    tickHandle = setInterval(function () {
+      secsLeft -= 1;
+      var frac = secsLeft / REFRESH_INTERVAL;
+      setArc(Math.max(0, frac));
+      if (secsLeft <= 0) {
+        clearInterval(tickHandle);
+        doRefresh();
+      }
+    }, 1000);
+  }
+
+  async function doRefresh() {
+    // Show spinning state
+    refreshBtn.classList.add('spinning');
+
+    var [cb, cs, bc] = await Promise.all([fetchChaturbate(), fetchCamsoda(), fetchBonga()]);
+    allModels = dedup([].concat(cb, cs, bc));
+    render();
+
+    refreshBtn.classList.remove('spinning');
+    startTimer();
+  }
+
+  // Manual click / keyboard
+  refreshBtn.addEventListener('click', function () {
+    clearInterval(tickHandle);
+    doRefresh();
+  });
+  refreshBtn.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); refreshBtn.click(); }
+  });
+
+  /* ── Initial load ── */
   (async function init() {
-    const loading = document.getElementById('loading');
+    var loading = document.getElementById('loading');
     loading.style.display = 'flex';
 
-    const [cb, cs, bc] = await Promise.all([
-      fetchChaturbate(),
-      fetchCamsoda(),
-      fetchBonga(),
-    ]);
+    var [cb, cs, bc] = await Promise.all([fetchChaturbate(), fetchCamsoda(), fetchBonga()]);
+    allModels = dedup([].concat(cb, cs, bc));
 
-    allModels = dedup([...cb, ...cs, ...bc]);
     loading.style.display = 'none';
     render();
+    startTimer();
   })();
 
 })();
