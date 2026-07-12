@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiveGrid — Free Live Cams | Top Models Online Now</title>
+  <meta name="description" content="Watch the hottest live cam models online right now. Browse female, male, couples, and trans performers across Chaturbate, CamSoda, and BongaCams." />
+  <link rel="canonical" href="https://example.com/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="LiveGrid — Free Live Cams | Top Models Online Now" />
+  <meta property="og:description" content="Watch the hottest live cam models online right now. Browse female, male, couples, and trans performers." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://example.com/" />
+
+  <!-- Schema.org JSON-LD (populated dynamically below) -->
+  <script id="schema-website" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "LiveGrid",
+    "url": "https://example.com/"
+  }
+  </script>
+  <script id="schema-itemlist" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Live Cam Models",
+    "itemListElement": []
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0a0a0a;
+      --surface:  #1a1a1a;
+      --surface2: #2a2a2a;
+      --muted:    #888;
+      --light:    #ccc;
+      --white:    #ffffff;
+      --radius:   10px;
+      --gap:      12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--surface2);
+    }
+
+    .header-inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      height: 56px;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--white);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .logo span { color: var(--muted); font-weight: 400; }
+
+    /* ── Nav ── */
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+      flex: 1;
+      scrollbar-width: none;
+    }
+    nav::-webkit-scrollbar { display: none; }
+
+    .filter-btn {
+      background: none;
+      border: 1px solid transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 100px;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .filter-btn:hover { color: var(--white); border-color: var(--surface2); }
+    .filter-btn.active {
+      color: var(--white);
+      background: var(--surface2);
+      border-color: var(--surface2);
+    }
+
+    .live-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .live-count strong { color: var(--white); }
+
+    /* ── Main ── */
+    main {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 20px 20px 60px;
+    }
+
+    /* ── Masonry grid ── */
+    #grid {
+      columns: 2;
+      column-gap: var(--gap);
+    }
+    @media (min-width: 480px)  { #grid { columns: 2; } }
+    @media (min-width: 640px)  { #grid { columns: 3; } }
+    @media (min-width: 900px)  { #grid { columns: 4; } }
+    @media (min-width: 1200px) { #grid { columns: 5; } }
+    @media (min-width: 1500px) { #grid { columns: 6; } }
+
+    /* ── Card ── */
+    article.card {
+      break-inside: avoid;
+      margin-bottom: var(--gap);
+      background: var(--surface);
+      border: 1px solid var(--surface2);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: block;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+    article.card:hover {
+      transform: scale(1.025);
+      border-color: #555;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      z-index: 1;
+      position: relative;
+    }
+
+    .card-thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      background: var(--surface2);
+    }
+    .card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    article.card:hover .card-thumb img { transform: scale(1.05); }
+
+    /* Live badge */
+    .live-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(10,10,10,0.75);
+      border: 1px solid #333;
+      border-radius: 100px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--light);
+    }
+    .pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #aaa;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.35; transform: scale(0.7); }
+    }
+
+    /* Viewer count */
+    .viewer-count {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(10,10,10,0.75);
+      border: 1px solid #333;
+      border-radius: 100px;
+      padding: 3px 8px;
+      font-size: 10px;
+      color: var(--light);
+    }
+
+    /* Card body */
+    .card-body {
+      padding: 10px 12px 12px;
+    }
+    .card-username {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 100px;
+      background: var(--surface2);
+      color: var(--muted);
+      letter-spacing: 0.3px;
+    }
+    .badge-source {
+      font-size: 10px;
+      color: #555;
+    }
+    .card-topic {
+      margin-top: 5px;
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ── Loading / Empty ── */
+    #loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      gap: 16px;
+      color: var(--muted);
+    }
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--surface2);
+      border-top-color: var(--muted);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #empty-msg {
+      display: none;
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--surface2);
+      padding: 32px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+    footer p { max-width: 680px; margin: 0 auto 12px; }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    footer a:hover { color: var(--white); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/">LiveGrid <span>cams</span></a>
+    <nav role="navigation" aria-label="Filter models">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="female">Female</button>
+      <button class="filter-btn" data-filter="male">Male</button>
+      <button class="filter-btn" data-filter="couple">Couples</button>
+      <button class="filter-btn" data-filter="trans">Trans</button>
+      <button class="filter-btn" data-filter="featured">Featured</button>
+    </nav>
+    <div class="live-count" aria-live="polite"><strong id="count">0</strong> live</div>
+  </div>
+</header>
+
+<main>
+  <div id="loading" aria-label="Loading live models">
+    <div class="spinner" role="status" aria-hidden="true"></div>
+    <span>Fetching live models…</span>
+  </div>
+
+  <section id="grid" aria-label="Live cam models"></section>
+
+  <p id="empty-msg" role="status">No models found for this filter. Try another category.</p>
+</main>
+
+<footer>
+  <p>
+    <strong style="color:var(--light)">Affiliate Disclosure:</strong>
+    This site contains affiliate links. We may earn a commission when you visit partner sites through links on this page.
+    All models shown are 18 years of age or older. This site is for adults only (18+).
+  </p>
+  <nav class="footer-links" aria-label="Partner links">
+    <a href="https://chaturbate.com/in/?tour=NwNd&campaign=E8bhk&track=default" target="_blank" rel="noopener noreferrer">Broadcast on Chaturbate</a>
+    <a href="https://partners.camsoda.com/signup?id=bewse2" target="_blank" rel="noopener noreferrer">CamSoda Webmasters</a>
+    <a href="https://chaturbate.com/in/?tour=07kX&campaign=E8bhk&track=default" target="_blank" rel="noopener noreferrer">Affiliate Program</a>
+  </nav>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── Affiliate link builders ── */
+  function chaturbateLink(gender, username) {
+    const base = 'https://chaturbate.com/in/';
+    const map = {
+      female: 'IsSO',
+      male:   'R2Xc',
+      couple: '0G9g',
+      trans:  'khMd',
+    };
+    const tour = map[gender] || 'grq0';
+    return `${base}?tour=${tour}&campaign=E8bhk&track=default`;
+  }
+
+  function camsodaLink(gender) {
+    const map = {
+      female: 'https://www.camsoda.com/girls?id=bewse2&type=REV',
+      couple: 'https://www.camsoda.com/couples?id=bewse2&type=REV',
+      male:   'https://www.camsoda.com/men?id=bewse2&type=REV',
+      trans:  'https://www.camsoda.com/trans?id=bewse2&type=REV',
+    };
+    return map[gender] || 'https://www.camsoda.com/?id=bewse2&type=REV';
+  }
+
+  function bongaLink(modelId) {
+    return `https://bngprm.com/promo.php?type=direct_link&v=2&c=18144&models[]=${encodeURIComponent(modelId)}`;
+  }
+
+  /* ── Normalise gender strings ── */
+  function normaliseGender(raw) {
+    if (!raw) return 'female';
+    const s = String(raw).toLowerCase().trim();
+    if (s === 'f' || s === 'female' || s === 'girl' || s === 'girls' || s === 'woman') return 'female';
+    if (s === 'm' || s === 'male' || s === 'man' || s === 'men' || s === 'gay') return 'male';
+    if (s === 's' || s === 'couple' || s === 'couples' || s === 'c') return 'couple';
+    if (s === 't' || s === 'trans' || s === 'transgender' || s === 'transsexual') return 'trans';
+    return 'female';
+  }
+
+  /* ── Fetch helpers ── */
+  async function fetchChaturbate() {
+    try {
+      const res = await fetch(
+        'https://chaturbate.com/api/public/affiliates/onlinerooms/?wm=E8bhk&client_ip=request_ip&limit=50',
+        { mode: 'cors' }
+      );
+      if (!res.ok) return [];
+      const data = await res.json();
+      const rooms = Array.isArray(data.results) ? data.results : (Array.isArray(data) ? data : []);
+      return rooms.map((r) => ({
+        id:        `cb-${r.username}`,
+        username:  r.username || 'model',
+        gender:    normaliseGender(r.gender),
+        thumb:     r.preview_image_url_360x270 || r.preview_image_url || '',
+        viewers:   r.num_users || 0,
+        topic:     r.subject || '',
+        href:      chaturbateLink(normaliseGender(r.gender), r.username),
+        source:    'Chaturbate',
+        featured:  (r.num_users || 0) > 1000,
+      }));
+    } catch (e) {
+      return [];
+    }
+  }
+
+  async function fetchCamsoda() {
+    try {
+      const res = await fetch(
+        'https://feed.camsoda.com/api/v1/browse/online_embed?id=bewse2&cmp=CMP_HERE&index=1&length=50',
+        { mode: 'cors' }
+      );
+      if (!res.ok) return [];
+      const data = await res.json();
+      const models = Array.isArray(data.data) ? data.data :
+                     Array.isArray(data.results) ? data.results :
+                     Array.isArray(data) ? data : [];
+      return models.map((m) => {
+        const gender = normaliseGender(m.gender || m.sex);
+        const thumb  = m.thumbnail || m.preview || m.img || '';
+        return {
+          id:       `cs-${m.username || m.user}`,
+          username: m.username || m.user || 'model',
+          gender,
+          thumb,
+          viewers:  m.viewers || m.num_users || 0,
+          topic:    m.subject || m.title || '',
+          href:     camsodaLink(gender),
+          source:   'CamSoda',
+          featured: (m.featured === true || m.top === true),
+        };
+      });
+    } catch (e) {
+      return [];
+    }
+  }
+
+  async function fetchBonga() {
+    try {
+      const res = await fetch(
+        'https://bngprm.com/promo.php?c=18144&type=api&api_v=1&limit=50&api_type=json',
+        { mode: 'cors' }
+      );
+      if (!res.ok) return [];
+      const data = await res.json();
+      const models = Array.isArray(data.models) ? data.models :
+                     Array.isArray(data) ? data : [];
+      return models.map((m) => {
+        const id    = m.id || m.user_id || m.username;
+        const gender = normaliseGender(m.gender || m.sex);
+        const thumb = m.preview || m.thumbnail || m.image || '';
+        return {
+          id:       `bc-${id}`,
+          username: m.username || m.display_name || 'model',
+          gender,
+          thumb,
+          viewers:  m.viewers || 0,
+          topic:    m.topic || m.subject || '',
+          href:     bongaLink(id),
+          source:   'BongaCams',
+          featured: false,
+        };
+      });
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /* ── Build card DOM ── */
+  function buildCard(model) {
+    const a = document.createElement('a');
+    a.className = 'card';
+    a.href      = model.href;
+    a.target    = '_blank';
+    a.rel       = 'noopener noreferrer';
+    a.setAttribute('aria-label', `${model.username} — live on ${model.source}`);
+    a.dataset.gender   = model.gender;
+    a.dataset.featured = model.featured ? '1' : '0';
+
+    const genderLabel = {
+      female: 'Female', male: 'Male', couple: 'Couples', trans: 'Trans',
+    }[model.gender] || 'Live';
+
+    const viewersBadge = model.viewers
+      ? `<span class="viewer-count" aria-label="${model.viewers.toLocaleString()} viewers">${formatNum(model.viewers)}</span>`
+      : '';
+
+    const thumb = model.thumb
+      ? `<img src="${escapeAttr(model.thumb)}" alt="${escapeAttr(model.username)} live cam preview" loading="lazy" decoding="async" onerror="this.closest('.card-thumb').style.background='#222'" />`
+      : '';
+
+    const topicHtml = model.topic
+      ? `<p class="card-topic" title="${escapeAttr(model.topic)}">${escapeHtml(model.topic)}</p>`
+      : '';
+
+    a.innerHTML = `
+      <div class="card-thumb">
+        ${thumb}
+        <span class="live-badge"><span class="pulse" aria-hidden="true"></span>LIVE</span>
+        ${viewersBadge}
+      </div>
+      <div class="card-body">
+        <p class="card-username">${escapeHtml(model.username)}</p>
+        <div class="card-meta">
+          <span class="badge">${genderLabel}</span>
+          <span class="badge-source">${escapeHtml(model.source)}</span>
+        </div>
+        ${topicHtml}
+      </div>`;
+
+    return a;
+  }
+
+  /* ── Utilities ── */
+  function formatNum(n) {
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return String(n);
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function escapeAttr(s) {
+    return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  /* ── State ── */
+  let allModels  = [];
+  let activeFilter = 'all';
+
+  /* ── Render grid ── */
+  function render() {
+    const grid = document.getElementById('grid');
+    const emptyMsg = document.getElementById('empty-msg');
+
+    const filtered = allModels.filter((m) => {
+      if (activeFilter === 'all')      return true;
+      if (activeFilter === 'featured') return m.featured;
+      return m.gender === activeFilter;
+    });
+
+    // Update count
+    document.getElementById('count').textContent = filtered.length.toLocaleString();
+
+    grid.innerHTML = '';
+    if (filtered.length === 0) {
+      emptyMsg.style.display = 'block';
+      return;
+    }
+    emptyMsg.style.display = 'none';
+
+    // Shuffle for variety then preserve featured at top
+    const featured = filtered.filter((m) => m.featured);
+    const rest     = filtered.filter((m) => !m.featured);
+    shuffle(rest);
+    [...featured, ...rest].forEach((m) => grid.appendChild(buildCard(m)));
+
+    // Update JSON-LD ItemList
+    try {
+      const schema = document.getElementById('schema-itemlist');
+      const obj = JSON.parse(schema.textContent);
+      obj.itemListElement = filtered.slice(0, 50).map((m, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: m.href,
+        name: m.username,
+      }));
+      schema.textContent = JSON.stringify(obj);
+    } catch (_) {}
+  }
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+
+  /* ── Filter buttons ── */
+  document.querySelectorAll('.filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  /* ── Dedup by id ── */
+  function dedup(arr) {
+    const seen = new Set();
+    return arr.filter((m) => {
+      if (seen.has(m.id)) return false;
+      seen.add(m.id);
+      return true;
+    });
+  }
+
+  /* ── Bootstrap ── */
+  (async function init() {
+    const loading = document.getElementById('loading');
+    loading.style.display = 'flex';
+
+    const [cb, cs, bc] = await Promise.all([
+      fetchChaturbate(),
+      fetchCamsoda(),
+      fetchBonga(),
+    ]);
+
+    allModels = dedup([...cb, ...cs, ...bc]);
+    loading.style.display = 'none';
+    render();
+  })();
+
+})();
+</script>
+
+</body>
+</html>
