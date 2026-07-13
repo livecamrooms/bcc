@@ -3,19 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="referrer" content="no-referrer" />
   <title>LiveGrid — Free Live Cams | Top Models Online Now</title>
   <meta name="description" content="Watch the hottest live cam models online right now. Browse female, male, couples, and trans performers across Chaturbate, CamSoda, and BongaCams." />
   <link rel="canonical" href="https://livecamrooms.github.io/bcc/" />
+  <meta name="referrer" content="no-referrer" />
 
   <!-- Open Graph -->
   <meta property="og:title" content="LiveGrid — Free Live Cams | Top Models Online Now" />
   <meta property="og:description" content="Watch the hottest live cam models online right now. Browse female, male, couples, and trans performers." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://livecamrooms.github.io/bcc/" />
+  <meta property="og:url" content="https://example.com/" />
 
-  <script id="schema-website" type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"LiveGrid","url":"https://livecamrooms.github.io/bcc/"}</script>
-  <script id="schema-itemlist" type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"Live Cam Models","itemListElement":[]}</script>
+  <!-- Schema.org JSON-LD -->
+  <script id="schema-website" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "LiveGrid",
+    "url": "https://example.com/"
+  }
+  </script>
+  <script id="schema-itemlist" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Live Cam Models",
+    "itemListElement": []
+  }
+  </script>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -52,6 +67,7 @@
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--surface2);
     }
+
     .header-inner {
       max-width: 1600px;
       margin: 0 auto;
@@ -61,6 +77,7 @@
       gap: 24px;
       height: 56px;
     }
+
     .logo {
       font-size: 18px;
       font-weight: 700;
@@ -71,6 +88,7 @@
     }
     .logo span { color: var(--muted); font-weight: 400; }
 
+    /* ── Nav ── */
     nav {
       display: flex;
       align-items: center;
@@ -91,53 +109,103 @@
       padding: 5px 14px;
       border-radius: 100px;
       white-space: nowrap;
-      transition: color .15s, border-color .15s, background .15s;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
     }
     .filter-btn:hover { color: var(--white); border-color: var(--surface2); }
-    .filter-btn.active { color: var(--white); background: var(--surface2); border-color: var(--surface2); }
+    .filter-btn.active {
+      color: var(--white);
+      background: var(--surface2);
+      border-color: var(--surface2);
+    }
 
-    .header-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-    .live-count { font-size: 12px; color: var(--muted); }
+    /* ── Header right: count + refresh ── */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .live-count {
+      font-size: 12px;
+      color: var(--muted);
+    }
     .live-count strong { color: var(--white); }
 
     /* Refresh ring */
     .refresh-wrap {
       position: relative;
-      width: 28px; height: 28px;
-      cursor: pointer; flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      flex-shrink: 0;
+      title: "Refresh now";
     }
     .refresh-wrap:hover .refresh-icon { color: var(--white); }
+
     .refresh-icon {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: var(--muted);
-      transition: color .15s;
+      transition: color 0.15s;
       font-size: 13px;
       user-select: none;
     }
-    .refresh-ring { width: 28px; height: 28px; border-radius: 50%; transform: rotate(-90deg); display: block; }
-    .refresh-ring-bg { fill: none; stroke: var(--surface2); stroke-width: 2.5; }
+
+    .refresh-ring {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      transform: rotate(-90deg);
+      display: block;
+    }
+    .refresh-ring-bg {
+      fill: none;
+      stroke: var(--surface2);
+      stroke-width: 2.5;
+    }
     .refresh-ring-arc {
-      fill: none; stroke: var(--muted); stroke-width: 2.5; stroke-linecap: round;
-      stroke-dasharray: 75.4; stroke-dashoffset: 0;
+      fill: none;
+      stroke: var(--muted);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-dasharray: 75.4; /* 2πr = 2π×12 */
+      stroke-dashoffset: 0;
       transition: stroke-dashoffset 1s linear;
     }
-    .refresh-wrap.spinning .refresh-icon { animation: spin .7s linear infinite; }
-    .refresh-wrap.spinning .refresh-ring-arc { stroke-dashoffset: 75.4; }
+
+    /* Spinning state when refreshing */
+    .refresh-wrap.spinning .refresh-icon {
+      animation: spin 0.7s linear infinite;
+    }
+    .refresh-wrap.spinning .refresh-ring-arc {
+      stroke: var(--muted);
+      stroke-dashoffset: 75.4;
+    }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── Main ── */
-    main { max-width: 1600px; margin: 0 auto; padding: 20px 20px 60px; }
+    main {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 20px 20px 60px;
+    }
 
-    /* Masonry */
-    #grid { columns: 2; column-gap: var(--gap); }
+    /* ── Masonry grid ── */
+    #grid {
+      columns: 2;
+      column-gap: var(--gap);
+    }
     @media (min-width: 480px)  { #grid { columns: 2; } }
     @media (min-width: 640px)  { #grid { columns: 3; } }
     @media (min-width: 900px)  { #grid { columns: 4; } }
     @media (min-width: 1200px) { #grid { columns: 5; } }
     @media (min-width: 1500px) { #grid { columns: 6; } }
 
-    /* Card */
+    /* ── Card ── */
     article.card {
       break-inside: avoid;
       margin-bottom: var(--gap);
@@ -146,7 +214,7 @@
       border-radius: var(--radius);
       overflow: hidden;
       display: block;
-      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
       cursor: pointer;
       text-decoration: none;
       color: inherit;
@@ -154,70 +222,169 @@
     article.card:hover {
       transform: scale(1.025);
       border-color: #555;
-      box-shadow: 0 8px 32px rgba(0,0,0,.6);
-      z-index: 1; position: relative;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      z-index: 1;
+      position: relative;
     }
+
     .card-thumb {
       position: relative;
-      width: 100%; aspect-ratio: 4/3;
+      width: 100%;
+      aspect-ratio: 4/3;
       overflow: hidden;
       background: var(--surface2);
     }
     .card-thumb img {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
-      transition: transform .3s ease;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
     }
     article.card:hover .card-thumb img { transform: scale(1.05); }
 
+    /* Thumb placeholder when image absent */
+    .thumb-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--surface2);
+      font-size: 28px;
+    }
+
+    /* Live badge */
     .live-badge {
-      position: absolute; top: 8px; left: 8px;
-      display: flex; align-items: center; gap: 5px;
-      background: rgba(10,10,10,.75); border: 1px solid #333;
-      border-radius: 100px; padding: 3px 8px;
-      font-size: 10px; font-weight: 600;
-      letter-spacing: .5px; text-transform: uppercase; color: var(--light);
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(10,10,10,0.75);
+      border: 1px solid #333;
+      border-radius: 100px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--light);
     }
     .pulse {
-      width: 6px; height: 6px; border-radius: 50%; background: #aaa;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #aaa;
       animation: pulse 1.8s ease-in-out infinite;
     }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.7)} }
-
-    .viewer-count {
-      position: absolute; bottom: 8px; right: 8px;
-      background: rgba(10,10,10,.75); border: 1px solid #333;
-      border-radius: 100px; padding: 3px 8px;
-      font-size: 10px; color: var(--light);
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.35; transform: scale(0.7); }
     }
-    .card-body { padding: 10px 12px 12px; }
-    .card-username { font-size: 13px; font-weight: 600; color: var(--white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .card-meta { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
-    .badge { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 100px; background: var(--surface2); color: var(--muted); }
-    .badge-source { font-size: 10px; color: #555; }
-    .card-topic { margin-top: 5px; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* Loading */
+    /* Viewer count */
+    .viewer-count {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(10,10,10,0.75);
+      border: 1px solid #333;
+      border-radius: 100px;
+      padding: 3px 8px;
+      font-size: 10px;
+      color: var(--light);
+    }
+
+    /* Card body */
+    .card-body {
+      padding: 10px 12px 12px;
+    }
+    .card-username {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 100px;
+      background: var(--surface2);
+      color: var(--muted);
+      letter-spacing: 0.3px;
+    }
+    .badge-source {
+      font-size: 10px;
+      color: #555;
+    }
+    .card-topic {
+      margin-top: 5px;
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ── Loading ── */
     #loading {
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; padding: 80px 20px; gap: 16px; color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      gap: 16px;
+      color: var(--muted);
     }
     .spinner {
-      width: 32px; height: 32px;
-      border: 2px solid var(--surface2); border-top-color: var(--muted);
-      border-radius: 50%; animation: spin .7s linear infinite;
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--surface2);
+      border-top-color: var(--muted);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
     }
-    #empty-msg { display: none; text-align: center; padding: 80px 20px; color: var(--muted); }
 
-    /* Footer */
+    #empty-msg {
+      display: none;
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+    }
+
+    /* ── Footer ── */
     footer {
       border-top: 1px solid var(--surface2);
-      padding: 32px 20px; text-align: center;
-      color: var(--muted); font-size: 12px; line-height: 1.8;
+      padding: 32px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
     }
     footer p { max-width: 680px; margin: 0 auto 12px; }
-    .footer-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; }
-    footer a { color: var(--muted); text-decoration: none; transition: color .15s; }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
     footer a:hover { color: var(--white); }
   </style>
 </head>
@@ -236,10 +403,11 @@
     </nav>
     <div class="header-right">
       <div class="live-count" aria-live="polite"><strong id="count">0</strong> live</div>
+      <!-- Refresh ring button -->
       <div class="refresh-wrap" id="refreshBtn" role="button" tabindex="0" aria-label="Refresh now">
         <svg class="refresh-ring" viewBox="0 0 28 28" aria-hidden="true">
-          <circle class="refresh-ring-bg" cx="14" cy="14" r="12"/>
-          <circle class="refresh-ring-arc" id="ringArc" cx="14" cy="14" r="12"/>
+          <circle class="refresh-ring-bg" cx="14" cy="14" r="12" />
+          <circle class="refresh-ring-arc" id="ringArc" cx="14" cy="14" r="12" />
         </svg>
         <span class="refresh-icon" id="refreshIcon">↻</span>
       </div>
@@ -252,7 +420,9 @@
     <div class="spinner" role="status" aria-hidden="true"></div>
     <span>Fetching live models…</span>
   </div>
+
   <section id="grid" aria-label="Live cam models"></section>
+
   <p id="empty-msg" role="status">No models found for this filter. Try another category.</p>
 </main>
 
@@ -273,212 +443,319 @@
 (function () {
   'use strict';
 
-  var REFRESH_INTERVAL = 60;
+  /* ── Config ── */
+  var REFRESH_INTERVAL = 60; // seconds
 
-  /* ── Affiliate links ── */
-  function chaturbateLink(gender) {
-    var map = { female:'IsSO', male:'R2Xc', couple:'0G9g', trans:'khMd' };
-    return 'https://chaturbate.com/in/?tour=' + (map[gender]||'grq0') + '&campaign=E8bhk&track=default';
+  /* ── Direct image URL (no proxy — referrerpolicy=no-referrer on <img> bypasses hotlink checks) ── */
+  function proxyImg(url) {
+    return url || '';
   }
+
+  /* ── Affiliate link builders ── */
+  function chaturbateLink(gender) {
+    var map = { female: 'IsSO', male: 'R2Xc', couple: '0G9g', trans: 'khMd' };
+    var tour = map[gender] || 'grq0';
+    return 'https://chaturbate.com/in/?tour=' + tour + '&campaign=E8bhk&track=default';
+  }
+
   function camsodaLink(gender) {
-    var map = { female:'https://www.camsoda.com/girls?id=bewse2&type=REV', couple:'https://www.camsoda.com/couples?id=bewse2&type=REV', male:'https://www.camsoda.com/men?id=bewse2&type=REV', trans:'https://www.camsoda.com/trans?id=bewse2&type=REV' };
+    var map = {
+      female: 'https://www.camsoda.com/girls?id=bewse2&type=REV',
+      couple: 'https://www.camsoda.com/couples?id=bewse2&type=REV',
+      male:   'https://www.camsoda.com/men?id=bewse2&type=REV',
+      trans:  'https://www.camsoda.com/trans?id=bewse2&type=REV',
+    };
     return map[gender] || 'https://www.camsoda.com/?id=bewse2&type=REV';
   }
-  function bongaLink(id) {
-    return 'https://bngprm.com/promo.php?type=direct_link&v=2&c=18144&models[]=' + encodeURIComponent(id);
+
+  function bongaLink(modelId) {
+    return 'https://bngprm.com/promo.php?type=direct_link&v=2&c=18144&models[]=' + encodeURIComponent(modelId);
   }
 
-  /* ── Gender normalise ── */
+  /* ── Normalise gender ── */
   function normaliseGender(raw) {
     if (!raw) return 'female';
     var s = String(raw).toLowerCase().trim();
-    if ('f female girl girls woman'.indexOf(s) > -1) return 'female';
-    if ('m male man men gay'.indexOf(s) > -1) return 'male';
-    if ('s couple couples c'.indexOf(s) > -1) return 'couple';
-    if ('t trans transgender transsexual'.indexOf(s) > -1) return 'trans';
+    if (s === 'f' || s === 'female' || s === 'girl' || s === 'girls' || s === 'woman') return 'female';
+    if (s === 'm' || s === 'male' || s === 'man' || s === 'men' || s === 'gay') return 'male';
+    if (s === 's' || s === 'couple' || s === 'couples' || s === 'c') return 'couple';
+    if (s === 't' || s === 'trans' || s === 'transgender' || s === 'transsexual') return 'trans';
     return 'female';
   }
 
-  /* ── Fetch ── */
+  /* ── Fetch helpers ── */
   async function fetchChaturbate() {
     try {
-      var r = await fetch('https://chaturbate.com/api/public/affiliates/onlinerooms/?wm=E8bhk&client_ip=request_ip&limit=50', {mode:'cors'});
-      if (!r.ok) return [];
-      var d = await r.json();
-      var rooms = Array.isArray(d.results) ? d.results : (Array.isArray(d) ? d : []);
-      return rooms.map(function(r) {
-        var g = normaliseGender(r.gender);
+      var res = await fetch(
+        'https://chaturbate.com/api/public/affiliates/onlinerooms/?wm=E8bhk&client_ip=request_ip&limit=50',
+        { mode: 'cors' }
+      );
+      if (!res.ok) return [];
+      var data = await res.json();
+      var rooms = Array.isArray(data.results) ? data.results : (Array.isArray(data) ? data : []);
+      return rooms.map(function (r) {
+        var gender = normaliseGender(r.gender);
         return {
-          id: 'cb-'+r.username, username: r.username||'model', gender: g,
-          thumb: r.preview_image_url_360x270||r.preview_image_url||'',
-          viewers: r.num_users||0, topic: r.subject||'',
-          href: chaturbateLink(g), source: 'Chaturbate', featured: (r.num_users||0)>1000
+          id:       'cb-' + r.username,
+          username: r.username || 'model',
+          gender:   gender,
+          thumb:    r.preview_image_url_360x270 || r.preview_image_url || '',
+          viewers:  r.num_users || 0,
+          topic:    r.subject || '',
+          href:     chaturbateLink(gender),
+          source:   'Chaturbate',
+          featured: (r.num_users || 0) > 1000,
         };
       });
-    } catch(e) { return []; }
+    } catch (e) { return []; }
   }
 
   async function fetchCamsoda() {
     try {
-      var r = await fetch('https://feed.camsoda.com/api/v1/browse/online_embed?id=bewse2&cmp=CMP_HERE&index=1&length=50', {mode:'cors'});
-      if (!r.ok) return [];
-      var d = await r.json();
-      var models = Array.isArray(d.data)?d.data:Array.isArray(d.results)?d.results:Array.isArray(d)?d:[];
-      return models.map(function(m) {
-        var g = normaliseGender(m.gender||m.sex);
+      var res = await fetch(
+        'https://feed.camsoda.com/api/v1/browse/online_embed?id=bewse2&cmp=CMP_HERE&index=1&length=50',
+        { mode: 'cors' }
+      );
+      if (!res.ok) return [];
+      var data = await res.json();
+      var models = Array.isArray(data.data)    ? data.data :
+                   Array.isArray(data.results) ? data.results :
+                   Array.isArray(data)         ? data : [];
+      return models.map(function (m) {
+        var gender = normaliseGender(m.gender || m.sex);
         return {
-          id: 'cs-'+(m.username||m.user), username: m.username||m.user||'model', gender: g,
-          thumb: m.thumbnail||m.preview||m.img||'',
-          viewers: m.viewers||m.num_users||0, topic: m.subject||m.title||'',
-          href: camsodaLink(g), source: 'CamSoda', featured: !!(m.featured||m.top)
+          id:       'cs-' + (m.username || m.user),
+          username: m.username || m.user || 'model',
+          gender:   gender,
+          thumb:    m.thumbnail || m.preview || m.img || '',
+          viewers:  m.viewers || m.num_users || 0,
+          topic:    m.subject || m.title || '',
+          href:     camsodaLink(gender),
+          source:   'CamSoda',
+          featured: !!(m.featured || m.top),
         };
       });
-    } catch(e) { return []; }
+    } catch (e) { return []; }
   }
 
   async function fetchBonga() {
     try {
-      var r = await fetch('https://bngprm.com/promo.php?c=18144&type=api&api_v=1&limit=50&api_type=json', {mode:'cors'});
-      if (!r.ok) return [];
-      var d = await r.json();
-      var models = Array.isArray(d.models)?d.models:Array.isArray(d)?d:[];
-      return models.map(function(m) {
-        var id = m.id||m.user_id||m.username;
-        var g = normaliseGender(m.gender||m.sex);
+      var res = await fetch(
+        'https://bngprm.com/promo.php?c=18144&type=api&api_v=1&limit=50&api_type=json',
+        { mode: 'cors' }
+      );
+      if (!res.ok) return [];
+      var data = await res.json();
+      var models = Array.isArray(data.models) ? data.models :
+                   Array.isArray(data)         ? data : [];
+      return models.map(function (m) {
+        var id     = m.id || m.user_id || m.username;
+        var gender = normaliseGender(m.gender || m.sex);
         return {
-          id: 'bc-'+id, username: m.username||m.display_name||'model', gender: g,
-          thumb: m.preview||m.thumbnail||m.image||'',
-          viewers: m.viewers||0, topic: m.topic||m.subject||'',
-          href: bongaLink(id), source: 'BongaCams', featured: false
+          id:       'bc-' + id,
+          username: m.username || m.display_name || 'model',
+          gender:   gender,
+          thumb:    m.preview || m.thumbnail || m.image || '',
+          viewers:  m.viewers || 0,
+          topic:    m.topic || m.subject || '',
+          href:     bongaLink(id),
+          source:   'BongaCams',
+          featured: false,
         };
       });
-    } catch(e) { return []; }
+    } catch (e) { return []; }
   }
 
-  /* ── Helpers ── */
-  function formatNum(n) { return n>=1000?(n/1000).toFixed(1).replace(/\.0$/,'')+'k':String(n); }
-  function escHtml(s)   { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  function escAttr(s)   { return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
-  function shuffle(a)   { for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} }
-  function dedup(a)     { var s=new Set(); return a.filter(function(m){if(s.has(m.id))return false;s.add(m.id);return true;}); }
+  /* ── Utilities ── */
+  function formatNum(n) {
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return String(n);
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function escapeAttr(s) {
+    return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function shuffle(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+  }
+  function dedup(arr) {
+    var seen = new Set();
+    return arr.filter(function (m) {
+      if (seen.has(m.id)) return false;
+      seen.add(m.id); return true;
+    });
+  }
 
-  /* ── Card ── */
-  function buildCard(m) {
+  /* ── Build card ── */
+  function buildCard(model) {
     var a = document.createElement('a');
     a.className = 'card';
-    a.href = m.href; a.target = '_blank'; a.rel = 'noopener noreferrer';
-    a.setAttribute('aria-label', m.username+' — live on '+m.source);
-    a.dataset.gender = m.gender; a.dataset.featured = m.featured?'1':'0';
+    a.href      = model.href;
+    a.target    = '_blank';
+    a.rel       = 'noopener noreferrer';
+    a.setAttribute('aria-label', model.username + ' — live on ' + model.source);
+    a.dataset.gender   = model.gender;
+    a.dataset.featured = model.featured ? '1' : '0';
 
-    var gLabel = {female:'Female',male:'Male',couple:'Couples',trans:'Trans'}[m.gender]||'Live';
-    var viewers = m.viewers ? '<span class="viewer-count">'+formatNum(m.viewers)+'</span>' : '';
-    var topic   = m.topic   ? '<p class="card-topic" title="'+escAttr(m.topic)+'">'+escHtml(m.topic)+'</p>' : '';
+    var genderLabel = { female:'Female', male:'Male', couple:'Couples', trans:'Trans' }[model.gender] || 'Live';
+    var viewersBadge = model.viewers
+      ? '<span class="viewer-count" aria-label="' + model.viewers.toLocaleString() + ' viewers">' + formatNum(model.viewers) + '</span>'
+      : '';
 
-    // Use direct URL with referrerpolicy="no-referrer" so request comes from the user's
-    // browser without a Referer header — bypasses CDN hotlink checks without a datacenter proxy.
-    var imgHtml = m.thumb
-      ? '<img src="'+escAttr(m.thumb)+'" referrerpolicy="no-referrer" crossorigin="anonymous" alt="'+escAttr(m.username)+' live cam" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">'
+    var thumbHtml;
+    var proxied = proxyImg(model.thumb);
+    if (proxied) {
+      thumbHtml = '<img src="' + escapeAttr(proxied) + '" alt="' + escapeAttr(model.username) + ' live cam preview" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'" />';
+    } else {
+      thumbHtml = '<div class="thumb-placeholder" aria-hidden="true">▶</div>';
+    }
+
+    var topicHtml = model.topic
+      ? '<p class="card-topic" title="' + escapeAttr(model.topic) + '">' + escapeHtml(model.topic) + '</p>'
       : '';
 
     a.innerHTML =
-      '<div class="card-thumb">'+imgHtml+
-        '<span class="live-badge"><span class="pulse" aria-hidden="true"></span>LIVE</span>'+viewers+
-      '</div>'+
-      '<div class="card-body">'+
-        '<p class="card-username">'+escHtml(m.username)+'</p>'+
-        '<div class="card-meta"><span class="badge">'+gLabel+'</span><span class="badge-source">'+escHtml(m.source)+'</span></div>'+
-        topic+
+      '<div class="card-thumb">' +
+        thumbHtml +
+        '<span class="live-badge"><span class="pulse" aria-hidden="true"></span>LIVE</span>' +
+        viewersBadge +
+      '</div>' +
+      '<div class="card-body">' +
+        '<p class="card-username">' + escapeHtml(model.username) + '</p>' +
+        '<div class="card-meta">' +
+          '<span class="badge">' + genderLabel + '</span>' +
+          '<span class="badge-source">' + escapeHtml(model.source) + '</span>' +
+        '</div>' +
+        topicHtml +
       '</div>';
+
     return a;
   }
 
   /* ── State ── */
-  var allModels = [], activeFilter = 'all';
+  var allModels    = [];
+  var activeFilter = 'all';
 
+  /* ── Render ── */
   function render() {
-    var grid = document.getElementById('grid');
-    var empty = document.getElementById('empty-msg');
+    var grid     = document.getElementById('grid');
+    var emptyMsg = document.getElementById('empty-msg');
 
-    var filtered = allModels.filter(function(m) {
-      if (activeFilter==='all') return true;
-      if (activeFilter==='featured') return m.featured;
-      return m.gender===activeFilter;
+    var filtered = allModels.filter(function (m) {
+      if (activeFilter === 'all')      return true;
+      if (activeFilter === 'featured') return m.featured;
+      return m.gender === activeFilter;
     });
 
     document.getElementById('count').textContent = filtered.length.toLocaleString();
-    grid.innerHTML = '';
-    if (!filtered.length) { empty.style.display='block'; return; }
-    empty.style.display = 'none';
 
-    var featured = filtered.filter(function(m){return m.featured;});
-    var rest     = filtered.filter(function(m){return !m.featured;});
+    grid.innerHTML = '';
+    if (filtered.length === 0) {
+      emptyMsg.style.display = 'block';
+      return;
+    }
+    emptyMsg.style.display = 'none';
+
+    var featured = filtered.filter(function (m) { return m.featured; });
+    var rest     = filtered.filter(function (m) { return !m.featured; });
     shuffle(rest);
+
     var frag = document.createDocumentFragment();
-    featured.concat(rest).forEach(function(m){frag.appendChild(buildCard(m));});
+    featured.concat(rest).forEach(function (m) { frag.appendChild(buildCard(m)); });
     grid.appendChild(frag);
 
+    // Update JSON-LD ItemList
     try {
-      var s = document.getElementById('schema-itemlist');
-      var o = JSON.parse(s.textContent);
-      o.itemListElement = filtered.slice(0,50).map(function(m,i){return{'@type':'ListItem',position:i+1,url:m.href,name:m.username};});
-      s.textContent = JSON.stringify(o);
-    } catch(_) {}
+      var schema = document.getElementById('schema-itemlist');
+      var obj    = JSON.parse(schema.textContent);
+      obj.itemListElement = filtered.slice(0, 50).map(function (m, i) {
+        return { '@type':'ListItem', position: i+1, url: m.href, name: m.username };
+      });
+      schema.textContent = JSON.stringify(obj);
+    } catch (_) {}
   }
 
-  /* ── Filters ── */
-  document.querySelectorAll('.filter-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
+  /* ── Filter buttons ── */
+  document.querySelectorAll('.filter-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.filter-btn').forEach(function (b) { b.classList.remove('active'); });
       btn.classList.add('active');
       activeFilter = btn.dataset.filter;
       render();
-      window.scrollTo({top:0,behavior:'smooth'});
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
 
-  /* ── Refresh ring ── */
-  var refreshBtn = document.getElementById('refreshBtn');
-  var ringArc    = document.getElementById('ringArc');
-  var CIRC       = 75.4;
-  var tickHandle = null;
-  var secsLeft   = REFRESH_INTERVAL;
+  /* ── Auto-refresh timer ── */
+  var refreshBtn  = document.getElementById('refreshBtn');
+  var ringArc     = document.getElementById('ringArc');
+  var CIRCUMF     = 75.4; // 2π × 12
+  var timerHandle = null;
+  var secsLeft    = REFRESH_INTERVAL;
+  var tickHandle  = null;
 
-  function setArc(frac) { ringArc.style.strokeDashoffset = (CIRC*(1-frac)).toFixed(2); }
+  function setArc(frac) {
+    // frac 1 = full ring, 0 = empty
+    ringArc.style.strokeDashoffset = (CIRCUMF * (1 - frac)).toFixed(2);
+  }
 
   function startTimer() {
     clearInterval(tickHandle);
     secsLeft = REFRESH_INTERVAL;
     setArc(1);
-    tickHandle = setInterval(function(){
-      secsLeft--;
-      setArc(Math.max(0, secsLeft/REFRESH_INTERVAL));
-      if (secsLeft<=0) { clearInterval(tickHandle); doRefresh(); }
+
+    tickHandle = setInterval(function () {
+      secsLeft -= 1;
+      var frac = secsLeft / REFRESH_INTERVAL;
+      setArc(Math.max(0, frac));
+      if (secsLeft <= 0) {
+        clearInterval(tickHandle);
+        doRefresh();
+      }
     }, 1000);
   }
 
   async function doRefresh() {
+    // Show spinning state
     refreshBtn.classList.add('spinning');
-    var results = await Promise.all([fetchChaturbate(), fetchCamsoda(), fetchBonga()]);
-    allModels = dedup([].concat(results[0], results[1], results[2]));
+
+    var [cb, cs, bc] = await Promise.all([fetchChaturbate(), fetchCamsoda(), fetchBonga()]);
+    allModels = dedup([].concat(cb, cs, bc));
     render();
+
     refreshBtn.classList.remove('spinning');
     startTimer();
   }
 
-  refreshBtn.addEventListener('click', function(){ clearInterval(tickHandle); doRefresh(); });
-  refreshBtn.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){e.preventDefault();refreshBtn.click();} });
+  // Manual click / keyboard
+  refreshBtn.addEventListener('click', function () {
+    clearInterval(tickHandle);
+    doRefresh();
+  });
+  refreshBtn.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); refreshBtn.click(); }
+  });
 
-  /* ── Init ── */
-  (async function(){
-    document.getElementById('loading').style.display = 'flex';
-    var results = await Promise.all([fetchChaturbate(), fetchCamsoda(), fetchBonga()]);
-    allModels = dedup([].concat(results[0], results[1], results[2]));
-    document.getElementById('loading').style.display = 'none';
+  /* ── Initial load ── */
+  (async function init() {
+    var loading = document.getElementById('loading');
+    loading.style.display = 'flex';
+
+    var [cb, cs, bc] = await Promise.all([fetchChaturbate(), fetchCamsoda(), fetchBonga()]);
+    allModels = dedup([].concat(cb, cs, bc));
+
+    loading.style.display = 'none';
     render();
     startTimer();
   })();
 
 })();
 </script>
+
 </body>
 </html>
